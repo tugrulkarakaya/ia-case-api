@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.iacaseapi.component;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.iacaseapi.component.testutils.fixtures.AsylumCaseForTest.anAsylumCase;
 import static uk.gov.hmcts.reform.iacaseapi.component.testutils.fixtures.CallbackForTest.CallbackForTestBuilder.callback;
 import static uk.gov.hmcts.reform.iacaseapi.component.testutils.fixtures.CaseDetailsForTest.CaseDetailsForTestBuilder.someCaseDetailsWith;
+import static uk.gov.hmcts.reform.iacaseapi.component.testutils.fixtures.UserDetailsForTest.UserDetailsForTestBuilder.userWith;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
@@ -23,6 +25,11 @@ public class RecordAttendeesAndDurationTest extends SpringBootIntegrationTest {
     @WithMockUser(authorities = {"caseworker-ia", "caseworker-ia-admofficer"})
     public void sets_flag_to_indicate_the_hearing_details_have_been_recorded() {
 
+        given.someLoggedIn(userWith()
+            .roles(newHashSet("caseworker-ia", "caseworker-ia-caseofficer"))
+            .forename("Case")
+            .surname("Officer"));
+
         PreSubmitCallbackResponseForTest response = iaCaseApiClient.aboutToSubmit(callback()
             .event(Event.RECORD_ATTENDEES_AND_DURATION)
             .caseDetails(someCaseDetailsWith()
@@ -40,6 +47,11 @@ public class RecordAttendeesAndDurationTest extends SpringBootIntegrationTest {
     @Test
     @WithMockUser(authorities = {"caseworker-ia", "caseworker-ia-admofficer"})
     public void returns_confirmation_page_content() {
+
+        given.someLoggedIn(userWith()
+            .roles(newHashSet("caseworker-ia", "caseworker-ia-caseofficer"))
+            .forename("Case")
+            .surname("Officer"));
 
         PostSubmitCallbackResponseForTest response = iaCaseApiClient.ccdSubmitted(callback()
             .event(Event.RECORD_ATTENDEES_AND_DURATION)

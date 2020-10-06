@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.iacaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
@@ -35,11 +36,14 @@ public class HomeOfficeCaseNotificationsHandler implements PreSubmitCallbackHand
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        return featureToggler.getValue(HO_NOTIFICATION_FEATURE, false)
-               && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && callback.getEvent() == Event.REQUEST_RESPONDENT_EVIDENCE;
+        return
+            featureToggler.getValue(HO_NOTIFICATION_FEATURE, false)
+            && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
+            && Arrays.asList(
+                Event.REQUEST_RESPONDENT_EVIDENCE,
+                Event.REQUEST_RESPONDENT_REVIEW
+            ).contains(callback.getEvent());
     }
-
 
     public PreSubmitCallbackResponse<AsylumCase> handle(
         PreSubmitCallbackStage callbackStage,

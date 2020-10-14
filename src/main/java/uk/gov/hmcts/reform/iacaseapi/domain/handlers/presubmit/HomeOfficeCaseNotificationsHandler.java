@@ -41,7 +41,8 @@ public class HomeOfficeCaseNotificationsHandler implements PreSubmitCallbackHand
             && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
             && Arrays.asList(
                 Event.REQUEST_RESPONDENT_EVIDENCE,
-                Event.REQUEST_RESPONDENT_REVIEW
+                Event.REQUEST_RESPONDENT_REVIEW,
+                Event.LIST_CASE
             ).contains(callback.getEvent());
     }
 

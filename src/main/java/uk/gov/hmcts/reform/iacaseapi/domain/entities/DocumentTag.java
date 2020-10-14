@@ -11,6 +11,7 @@ public enum DocumentTag {
     APPEAL_SUBMISSION("appealSubmission"),
     ADDITIONAL_EVIDENCE("additionalEvidence"),
     HEARING_NOTICE("hearingNotice"),
+    REHEARD_HEARING_NOTICE("reheardHearingNotice"),
     HEARING_REQUIREMENTS("hearingRequirements"),
     CASE_SUMMARY("caseSummary"),
     HEARING_BUNDLE("hearingBundle"),

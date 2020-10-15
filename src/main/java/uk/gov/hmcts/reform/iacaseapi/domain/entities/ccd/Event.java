@@ -96,6 +96,7 @@ public enum Event {
     MAKE_AN_APPLICATION("makeAnApplication"),
     REINSTATE_APPEAL("reinstateAppeal"),
     DECIDE_AN_APPLICATION("decideAnApplication"),
+    ALLOCATE_THE_CASE("allocateTheCase"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");

@@ -318,7 +318,6 @@ idam.s2s-auth.totp_secret: ${IA_S2S_SECRET:AAAAAAAAAAAAAAAC}
 idam.s2s-auth.microservice: ${IA_S2S_MICROSERVICE:ia}
 idam.s2s-auth.url: ${S2S_URL:http://127.0.0.1:4502}
 
-logging.level.uk.gov.hmcts.reform.iacaseapi.infrastructure.clients.RoleAssignmentApi: DEBUG
 feign:
   client:
     config:

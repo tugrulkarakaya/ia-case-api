@@ -1,0 +1,50 @@
+{
+  "description": "RIA-3683 List reheard case - prefill listing reference",
+  "launchDarklyKey": "reheard-feature:true",
+  "request": {
+    "uri": "/asylum/ccdAboutToStart",
+    "credentials": "AdminOfficer",
+    "input": {
+      "eventId": "listCase",
+      "state": "listing",
+      "caseData": {
+        "template": "minimal-appeal-submitted.json",
+        "replacements": {
+          "isReheardAppealEnabled": "Yes",
+          "caseFlagSetAsideReheardExists": "Yes",
+          "ariaListingReference": "LP/12345/2019",
+          "hearingCentre": "manchester",
+          "listCaseHearingCentre": "manchester",
+          "listCaseHearingLength": "300",
+          "listCaseHearingDate": "2019-12-31T12:35:00",
+          "listCaseRequirementsVulnerabilities": "some vulnerabilities",
+          "listCaseRequirementsMultimedia": "some multimedia",
+          "listCaseRequirementsSingleSexCourt": "some single-sex court",
+          "listCaseRequirementsInCameraCourt": "some in-camera court",
+          "listCaseRequirementsOther": "some other requirements"
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": "minimal-appeal-submitted.json",
+      "replacements": {
+        "isReheardAppealEnabled": "Yes",
+        "caseFlagSetAsideReheardExists": "Yes",
+        "ariaListingReference": "LP/12345/2019",
+        "hearingCentre": "manchester",
+        "listCaseHearingCentre": null,
+        "listCaseHearingLength": null,
+        "listCaseHearingDate": null,
+        "listCaseRequirementsVulnerabilities": "some vulnerabilities",
+        "listCaseRequirementsMultimedia": "some multimedia",
+        "listCaseRequirementsSingleSexCourt": "some single-sex court",
+        "listCaseRequirementsInCameraCourt": "some in-camera court",
+        "listCaseRequirementsOther": "some other requirements"
+      }
+    }
+  }
+}

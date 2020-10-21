@@ -1086,6 +1086,24 @@ public enum AsylumCaseFieldDefinition {
     CURRENT_HEARING_DETAILS_VISIBLE(
         "currentHearingDetailsVisible", new TypeReference<YesOrNo>() {}),
 
+    ATTENDING_JUDGE(
+        "attendingJudge", new TypeReference<String>(){}),
+
+    ATTENDING_APPELLANT(
+        "attendingAppellant", new TypeReference<String>(){}),
+
+    ATTENDING_HOME_OFFICE_LEGAL_REPRESENTATIVE(
+        "attendingHomeOfficeLegalRepresentative", new TypeReference<String>(){}),
+
+    ATTENDING_TCW(
+        "attendingTcw", new TypeReference<String>(){}),
+
+    ATTENDING_APPELLANTS_LEGAL_REPRESENTATIVE(
+        "attendingAppellantsLegalRepresentative", new TypeReference<String>(){}),
+
+    HEARING_CONDUCTION_OPTIONS(
+        "hearingConductionOptions", new TypeReference<List<IdValue<HearingConductionOptions>>>(){}),
+
     ;
 
     private final String value;

@@ -6,23 +6,39 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
+import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition;
+import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+
 
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
 public class ListCaseConfirmationTest {
 
     @Mock private Callback<AsylumCase> callback;
+    @Mock private CaseDetails<AsylumCase> caseDetails;
+    @Mock private AsylumCase asylumCase;
 
-    private ListCaseConfirmation listCaseConfirmation =
-        new ListCaseConfirmation();
+
+    private ListCaseConfirmation listCaseConfirmation;
+
+    @Before
+    public void setUp() {
+
+        listCaseConfirmation = new ListCaseConfirmation();
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+    }
 
     @Test
     public void should_return_confirmation() {
@@ -49,6 +65,37 @@ public class ListCaseConfirmationTest {
         assertThat(
             callbackResponse.getConfirmationBody().get(),
             containsString("You don't need to do any more on this case.")
+        );
+    }
+
+    @Test
+    public void should_return_notification_failed_confirmation() {
+
+        when(callback.getEvent()).thenReturn(Event.LIST_CASE);
+        when(asylumCase.read(AsylumCaseFieldDefinition.HOME_OFFICE_HEARING_INSTRUCT_STATUS, String.class))
+            .thenReturn(Optional.of("FAIL"));
+
+        PostSubmitCallbackResponse callbackResponse =
+            listCaseConfirmation.handle(callback);
+
+        assertNotNull(callbackResponse);
+        Assertions.assertThat(callbackResponse.getConfirmationHeader()).isNotPresent();
+        assertTrue(callbackResponse.getConfirmationBody().isPresent());
+
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("![Respondent notification failed confirmation]"
+                           + "(https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/respondent_notification_failed.svg)")
+        );
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("#### Do this next")
+        );
+        assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("Contact the respondent to tell them what has changed, including any action they need to take.")
         );
     }
 

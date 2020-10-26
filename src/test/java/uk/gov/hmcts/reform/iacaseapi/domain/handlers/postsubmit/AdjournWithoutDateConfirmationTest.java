@@ -10,9 +10,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lombok.Value;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +24,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
+import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition;
+import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
@@ -34,8 +38,17 @@ public class AdjournWithoutDateConfirmationTest {
 
     @Mock
     private Callback<AsylumCase> callback;
+    @Mock private CaseDetails<AsylumCase> caseDetails;
+    @Mock private AsylumCase asylumCase;
 
     private AdjournWithoutDateConfirmation handler = new AdjournWithoutDateConfirmation();
+
+    //@Before
+    //public void setUp() {
+    //
+    //    when(callback.getCaseDetails()).thenReturn(caseDetails);
+    //    when(caseDetails.getCaseData()).thenReturn(asylumCase);
+    //}
 
     @Test
     @Parameters(method = "generateTestScenarios")
@@ -45,6 +58,39 @@ public class AdjournWithoutDateConfirmationTest {
         boolean actualResult = handler.canHandle(callback);
 
         assertThat(actualResult).isEqualTo(scenario.canBeHandledExpected);
+    }
+
+    @Test
+    public void should_return_notification_failed_confirmation() {
+
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+
+        when(callback.getEvent()).thenReturn(Event.ADJOURN_HEARING_WITHOUT_DATE);
+        when(asylumCase.read(AsylumCaseFieldDefinition.HOME_OFFICE_ADJOURN_WITHOUT_DATE_INSTRUCT_STATUS, String.class))
+            .thenReturn(Optional.of("FAIL"));
+
+        PostSubmitCallbackResponse callbackResponse =
+            handler.handle(callback);
+
+        Assert.assertNotNull(callbackResponse);
+        Assertions.assertThat(callbackResponse.getConfirmationHeader()).isNotPresent();
+        Assert.assertTrue(callbackResponse.getConfirmationBody().isPresent());
+
+        Assert.assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("![Respondent notification failed confirmation]"
+                           + "(https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/respondent_notification_failed.svg)")
+        );
+
+        Assert.assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("#### Do this next")
+        );
+        Assert.assertThat(
+            callbackResponse.getConfirmationBody().get(),
+            containsString("Contact the respondent to tell them what has changed, including any action they need to take.")
+        );
     }
 
     private List<TestScenario> generateTestScenarios() {
@@ -85,6 +131,8 @@ public class AdjournWithoutDateConfirmationTest {
     @Test
     public void should_return_confirmation() {
         when(callback.getEvent()).thenReturn(Event.ADJOURN_HEARING_WITHOUT_DATE);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
 
         PostSubmitCallbackResponse callbackResponse = handler.handle(callback);
 

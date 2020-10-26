@@ -1064,6 +1064,12 @@ public enum AsylumCaseFieldDefinition {
     HAS_APPLICATIONS_TO_DECIDE(
         "hasApplicationsToDecide", new TypeReference<String>(){}),
 
+    IS_REMISSIONS_ENABLED(
+        "isRemissionsEnabled", new TypeReference<YesOrNo>(){}),
+
+    RP_DC_APPEAL_HEARING_OPTION(
+        "rpDcAppealHearingOption", new TypeReference<String>(){}),
+
     ;
 
     private final String value;

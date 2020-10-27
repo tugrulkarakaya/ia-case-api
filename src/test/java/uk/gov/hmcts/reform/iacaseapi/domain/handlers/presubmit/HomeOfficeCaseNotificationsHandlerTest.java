@@ -83,7 +83,9 @@ public class HomeOfficeCaseNotificationsHandlerTest {
     @Parameters({
         "LIST_CASE",
         "EDIT_CASE_LISTING",
-        "ADJOURN_HEARING_WITHOUT_DATE"
+        "ADJOURN_HEARING_WITHOUT_DATE",
+        "GENERATE_HEARING_BUNDLE",
+        "CUSTOMISE_HEARING_BUNDLE"
     })
     public void should_call_home_office_api_and_update_the_case_for_list_case(Event event) {
 
@@ -116,7 +118,9 @@ public class HomeOfficeCaseNotificationsHandlerTest {
                         Event.REQUEST_RESPONDENT_REVIEW,
                         Event.LIST_CASE,
                         Event.EDIT_CASE_LISTING,
-                        Event.ADJOURN_HEARING_WITHOUT_DATE
+                        Event.ADJOURN_HEARING_WITHOUT_DATE,
+                        Event.GENERATE_HEARING_BUNDLE,
+                        Event.CUSTOMISE_HEARING_BUNDLE
                     ).contains(callback.getEvent())
                 ) {
                     assertTrue(canHandle);

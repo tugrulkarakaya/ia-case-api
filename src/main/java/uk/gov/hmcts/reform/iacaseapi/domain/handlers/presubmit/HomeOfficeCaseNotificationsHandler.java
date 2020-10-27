@@ -44,7 +44,9 @@ public class HomeOfficeCaseNotificationsHandler implements PreSubmitCallbackHand
                 Event.REQUEST_RESPONDENT_REVIEW,
                 Event.LIST_CASE,
                 Event.EDIT_CASE_LISTING,
-                Event.ADJOURN_HEARING_WITHOUT_DATE
+                Event.ADJOURN_HEARING_WITHOUT_DATE,
+                Event.GENERATE_HEARING_BUNDLE,
+                Event.CUSTOMISE_HEARING_BUNDLE
             ).contains(callback.getEvent());
     }
 

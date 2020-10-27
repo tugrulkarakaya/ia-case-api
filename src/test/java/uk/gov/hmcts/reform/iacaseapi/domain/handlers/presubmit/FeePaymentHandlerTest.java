@@ -100,6 +100,20 @@ public class FeePaymentHandlerTest {
             verify(asylumCase, times(1))
                 .write(IS_FEE_PAYMENT_ENABLED, YesOrNo.YES);
             verify(asylumCase, times(1))
+                .clear(ASYLUM_SUPPORT_REFERENCE);
+            verify(asylumCase, times(1))
+                .clear(ASYLUM_SUPPORT_DOCUMENT);
+            verify(asylumCase, times(1))
+                .clear(LEGAL_AID_ACCOUNT_NUMBER);
+            verify(asylumCase, times(1))
+                .clear(LEGAL_AID_ACCOUNT_NUMBER);
+            verify(asylumCase, times(1))
+                .clear(SECTION17_DOCUMENT);
+            verify(asylumCase, times(1))
+                .clear(SECTION20_DOCUMENT);
+            verify(asylumCase, times(1))
+                .clear(HOME_OFFICE_WAIVER_DOCUMENT);
+            verify(asylumCase, times(1))
                 .clear(RP_DC_APPEAL_HEARING_OPTION);
             verify(asylumCase, times(1))
                 .clear(REMISSION_CLAIM);
@@ -204,6 +218,12 @@ public class FeePaymentHandlerTest {
             verify(asylumCase, times(1)).clear(FEE_REMISSION_TYPE);
             verify(asylumCase, times(1)).clear(REMISSION_TYPE);
             verify(asylumCase, times(1)).clear(REMISSION_CLAIM);
+            verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+            verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
+            verify(asylumCase, times(1)).clear(LEGAL_AID_ACCOUNT_NUMBER);
+            verify(asylumCase, times(1)).clear(SECTION17_DOCUMENT);
+            verify(asylumCase, times(1)).clear(SECTION20_DOCUMENT);
+            verify(asylumCase, times(1)).clear(HOME_OFFICE_WAIVER_DOCUMENT);
             reset(callback);
             reset(feePayment);
         });
@@ -288,8 +308,8 @@ public class FeePaymentHandlerTest {
         verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
         verify(asylumCase, times(0)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
         verify(asylumCase, times(1)).clear(RP_DC_APPEAL_HEARING_OPTION);
-        verify(asylumCase, times(0)).clear(ASYLUM_SUPPORT_REFERENCE);
-        verify(asylumCase, times(0)).clear(ASYLUM_SUPPORT_DOCUMENT);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
     }
 
     @Test
@@ -407,5 +427,180 @@ public class FeePaymentHandlerTest {
         assertThatThrownBy(() -> feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
             .isExactlyInstanceOf(IllegalStateException.class)
             .hasMessage("Appeal hearing option is not present");
+    }
+
+    @Test
+    public void should_return_data_for_valid_asylumSupport_remission_type() {
+
+        when(callback.getEvent()).thenReturn(Event.EDIT_APPEAL);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(asylumCase.read(APPEAL_TYPE, AppealType.class))
+            .thenReturn(Optional.of(AppealType.PA));
+        when(asylumCase.read(IS_REMISSIONS_ENABLED, YesOrNo.class))
+            .thenReturn(Optional.of(YesOrNo.YES));
+        when(asylumCase.read(REMISSION_TYPE, RemissionType.class))
+            .thenReturn(Optional.of(RemissionType.HO_WAIVER_REMISSION));
+        when(asylumCase.read(REMISSION_CLAIM, String.class))
+            .thenReturn(Optional.of("asylumSupport"));
+
+        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
+            feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(asylumCase, callbackResponse.getData());
+
+        verify(asylumCase, times(1)).write(FEE_REMISSION_TYPE, "Asylum support");
+        verify(asylumCase, times(1)).clear(LEGAL_AID_ACCOUNT_NUMBER);
+        verify(asylumCase, times(1)).clear(SECTION17_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION20_DOCUMENT);
+        verify(asylumCase, times(1)).clear(HOME_OFFICE_WAIVER_DOCUMENT);
+
+        verify(asylumCase, times(1)).clear(DECISION_HEARING_FEE_OPTION);
+        verify(asylumCase, times(1)).clear(HEARING_DECISION_SELECTED);
+        verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PAYMENT_STATUS);
+    }
+
+    @Test
+    public void should_return_data_for_valid_legalAid_remission_type() {
+
+        when(callback.getEvent()).thenReturn(Event.EDIT_APPEAL);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(asylumCase.read(APPEAL_TYPE, AppealType.class))
+            .thenReturn(Optional.of(AppealType.PA));
+        when(asylumCase.read(IS_REMISSIONS_ENABLED, YesOrNo.class))
+            .thenReturn(Optional.of(YesOrNo.YES));
+        when(asylumCase.read(REMISSION_TYPE, RemissionType.class))
+            .thenReturn(Optional.of(RemissionType.HO_WAIVER_REMISSION));
+        when(asylumCase.read(REMISSION_CLAIM, String.class))
+            .thenReturn(Optional.of("legalAid"));
+
+        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
+            feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(asylumCase, callbackResponse.getData());
+
+        verify(asylumCase, times(1)).write(FEE_REMISSION_TYPE, "Legal Aid");
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION17_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION20_DOCUMENT);
+        verify(asylumCase, times(1)).clear(HOME_OFFICE_WAIVER_DOCUMENT);
+
+        verify(asylumCase, times(1)).clear(DECISION_HEARING_FEE_OPTION);
+        verify(asylumCase, times(1)).clear(HEARING_DECISION_SELECTED);
+        verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PAYMENT_STATUS);
+
+    }
+
+    @Test
+    public void should_return_data_for_valid_section17_remission_type() {
+
+        when(callback.getEvent()).thenReturn(Event.EDIT_APPEAL);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(asylumCase.read(APPEAL_TYPE, AppealType.class))
+            .thenReturn(Optional.of(AppealType.PA));
+        when(asylumCase.read(IS_REMISSIONS_ENABLED, YesOrNo.class))
+            .thenReturn(Optional.of(YesOrNo.YES));
+        when(asylumCase.read(REMISSION_TYPE, RemissionType.class))
+            .thenReturn(Optional.of(RemissionType.HO_WAIVER_REMISSION));
+        when(asylumCase.read(REMISSION_CLAIM, String.class))
+            .thenReturn(Optional.of("section17"));
+
+        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
+            feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(asylumCase, callbackResponse.getData());
+
+        verify(asylumCase, times(1)).write(FEE_REMISSION_TYPE, "Section 17");
+        verify(asylumCase, times(1)).clear(LEGAL_AID_ACCOUNT_NUMBER);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION20_DOCUMENT);
+        verify(asylumCase, times(1)).clear(HOME_OFFICE_WAIVER_DOCUMENT);
+
+        verify(asylumCase, times(1)).clear(DECISION_HEARING_FEE_OPTION);
+        verify(asylumCase, times(1)).clear(HEARING_DECISION_SELECTED);
+        verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PAYMENT_STATUS);
+    }
+
+    @Test
+    public void should_return_data_for_valid_section20_remission_type() {
+
+        when(callback.getEvent()).thenReturn(Event.EDIT_APPEAL);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(asylumCase.read(APPEAL_TYPE, AppealType.class))
+            .thenReturn(Optional.of(AppealType.PA));
+        when(asylumCase.read(IS_REMISSIONS_ENABLED, YesOrNo.class))
+            .thenReturn(Optional.of(YesOrNo.YES));
+        when(asylumCase.read(REMISSION_TYPE, RemissionType.class))
+            .thenReturn(Optional.of(RemissionType.HO_WAIVER_REMISSION));
+        when(asylumCase.read(REMISSION_CLAIM, String.class))
+            .thenReturn(Optional.of("section20"));
+
+        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
+            feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(asylumCase, callbackResponse.getData());
+
+        verify(asylumCase, times(1)).write(FEE_REMISSION_TYPE, "Section 20");
+        verify(asylumCase, times(1)).clear(LEGAL_AID_ACCOUNT_NUMBER);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION17_DOCUMENT);
+        verify(asylumCase, times(1)).clear(HOME_OFFICE_WAIVER_DOCUMENT);
+
+        verify(asylumCase, times(1)).clear(DECISION_HEARING_FEE_OPTION);
+        verify(asylumCase, times(1)).clear(HEARING_DECISION_SELECTED);
+        verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PAYMENT_STATUS);
+    }
+
+    @Test
+    public void should_return_data_for_valid_homeOfficeWaiver_remission_type() {
+
+        when(callback.getEvent()).thenReturn(Event.EDIT_APPEAL);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(asylumCase.read(APPEAL_TYPE, AppealType.class))
+            .thenReturn(Optional.of(AppealType.PA));
+        when(asylumCase.read(IS_REMISSIONS_ENABLED, YesOrNo.class))
+            .thenReturn(Optional.of(YesOrNo.YES));
+        when(asylumCase.read(REMISSION_TYPE, RemissionType.class))
+            .thenReturn(Optional.of(RemissionType.HO_WAIVER_REMISSION));
+        when(asylumCase.read(REMISSION_CLAIM, String.class))
+            .thenReturn(Optional.of("homeOfficeWaiver"));
+
+        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
+            feePaymentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(asylumCase, callbackResponse.getData());
+
+        verify(asylumCase, times(1)).write(FEE_REMISSION_TYPE, "Home Office waiver");
+        verify(asylumCase, times(1)).clear(LEGAL_AID_ACCOUNT_NUMBER);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_REFERENCE);
+        verify(asylumCase, times(1)).clear(ASYLUM_SUPPORT_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION17_DOCUMENT);
+        verify(asylumCase, times(1)).clear(SECTION20_DOCUMENT);
+
+        verify(asylumCase, times(1)).clear(DECISION_HEARING_FEE_OPTION);
+        verify(asylumCase, times(1)).clear(HEARING_DECISION_SELECTED);
+        verify(asylumCase, times(1)).clear(EA_HU_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PA_APPEAL_TYPE_PAYMENT_OPTION);
+        verify(asylumCase, times(1)).clear(PAYMENT_STATUS);
     }
 }

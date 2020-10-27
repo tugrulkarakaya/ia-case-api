@@ -17,9 +17,16 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallb
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.iacaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.iacaseapi.domain.service.FeatureToggler;
 
 @Component
 public class DraftHearingRequirementsHandler implements PreSubmitCallbackHandler<AsylumCase> {
+
+    private final FeatureToggler featureToggler;
+
+    public DraftHearingRequirementsHandler(FeatureToggler featureToggler) {
+        this.featureToggler = featureToggler;
+    }
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
@@ -52,10 +59,22 @@ public class DraftHearingRequirementsHandler implements PreSubmitCallbackHandler
         asylumCase.write(WITNESS_COUNT, witnessDetails.size());
 
         asylumCase.write(SUBMIT_HEARING_REQUIREMENTS_AVAILABLE, YesOrNo.YES);
+
         asylumCase.write(REVIEWED_HEARING_REQUIREMENTS, YesOrNo.NO);
+
+        if (featureToggler.getValue("reheard-feature", false)
+            && asylumCase.read(CASE_FLAG_SET_ASIDE_REHEARD_EXISTS, YesOrNo.class).map(flag -> flag.equals(YesOrNo.YES)).orElse(false)) {
+            asylumCase.write(CURRENT_HEARING_DETAILS_VISIBLE, YesOrNo.NO);
+            asylumCase.clear(MULTIMEDIA_TRIBUNAL_RESPONSE);
+            asylumCase.clear(SINGLE_SEX_COURT_TRIBUNAL_RESPONSE);
+            asylumCase.clear(IN_CAMERA_COURT_TRIBUNAL_RESPONSE);
+            asylumCase.clear(VULNERABILITIES_TRIBUNAL_RESPONSE);
+            asylumCase.clear(ADDITIONAL_TRIBUNAL_RESPONSE);
+        } else {
+            asylumCase.write(CURRENT_HEARING_DETAILS_VISIBLE, YesOrNo.YES);
+        }
 
         return new PreSubmitCallbackResponse<>(asylumCase);
     }
-
 }
 

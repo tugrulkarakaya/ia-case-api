@@ -76,6 +76,7 @@ public class DraftHearingRequirementsHandlerTest {
         verify(asylumCase, times(1)).clear(IN_CAMERA_COURT_TRIBUNAL_RESPONSE);
         verify(asylumCase, times(1)).clear(VULNERABILITIES_TRIBUNAL_RESPONSE);
         verify(asylumCase, times(1)).clear(ADDITIONAL_TRIBUNAL_RESPONSE);
+        verify(asylumCase, times(1)).clear(HEARING_REQUIREMENTS);
     }
 
     @Test
@@ -94,6 +95,7 @@ public class DraftHearingRequirementsHandlerTest {
         verify(asylumCase, times(0)).clear(IN_CAMERA_COURT_TRIBUNAL_RESPONSE);
         verify(asylumCase, times(0)).clear(VULNERABILITIES_TRIBUNAL_RESPONSE);
         verify(asylumCase, times(0)).clear(ADDITIONAL_TRIBUNAL_RESPONSE);
+        verify(asylumCase, times(0)).clear(HEARING_REQUIREMENTS);
     }
 
     @Test

@@ -1104,6 +1104,9 @@ public enum AsylumCaseFieldDefinition {
     HEARING_CONDUCTION_OPTIONS(
         "hearingConductionOptions", new TypeReference<List<IdValue<HearingConductionOptions>>>(){}),
 
+    REHEARD_CASE_LISTED_WITHOUT_HEARING_REQUIREMENTS(
+        "reheardCaseListedWithoutHearingRequirements", new TypeReference<YesOrNo>() {}),
+
     ;
 
     private final String value;

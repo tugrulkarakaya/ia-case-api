@@ -1107,6 +1107,25 @@ public enum AsylumCaseFieldDefinition {
     REHEARD_CASE_LISTED_WITHOUT_HEARING_REQUIREMENTS(
         "reheardCaseListedWithoutHearingRequirements", new TypeReference<YesOrNo>() {}),
 
+    CASE_INTRODUCTION_DESCRIPTION(
+        "caseIntroductionDescription", new TypeReference<String>(){}),
+
+    APPELLANT_CASE_SUMMARY_DESCRIPTION(
+        "appellantCaseSummaryDescription", new TypeReference<String>(){}),
+
+    IMMIGRATION_HISTORY_AGREEMENT(
+        "immigrationHistoryAgreement", new TypeReference<YesOrNo>() {}),
+
+    AGREED_IMMIGRATION_HISTORY_DESCRIPTION(
+        "agreedImmigrationHistoryDescription", new TypeReference<String>(){}),
+
+    SCHEDULE_OF_ISSUES_AGREEMENT(
+        "scheduleOfIssuesAgreement", new TypeReference<YesOrNo>() {}),
+
+   SCHEDULE_OF_ISSUES_DISAGREEMENT_DESCRIPTION(
+        "scheduleOfIssuesDisagreementDescription", new TypeReference<String>(){}),
+
+
     ;
 
     private final String value;

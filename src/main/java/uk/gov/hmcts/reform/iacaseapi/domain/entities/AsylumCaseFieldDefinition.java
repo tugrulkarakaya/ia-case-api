@@ -1125,6 +1125,11 @@ public enum AsylumCaseFieldDefinition {
    SCHEDULE_OF_ISSUES_DISAGREEMENT_DESCRIPTION(
         "scheduleOfIssuesDisagreementDescription", new TypeReference<String>(){}),
 
+    ANONYMITY_ORDER(
+        "anonymityOrder", new TypeReference<YesOrNo>() {}),
+
+    APPELLANT_REPRESENTATIVE(
+        "appellantRepresentative", new TypeReference<String>(){}),
 
     ;
 

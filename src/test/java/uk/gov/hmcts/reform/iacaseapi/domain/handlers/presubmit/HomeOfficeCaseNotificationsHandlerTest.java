@@ -50,40 +50,14 @@ public class HomeOfficeCaseNotificationsHandlerTest {
     }
 
     @Test
-    public void should_call_home_office_api_and_update_the_case_for_respondent_evidence() {
-
-        when(callback.getEvent()).thenReturn(REQUEST_RESPONDENT_EVIDENCE);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
-
-        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
-            homeOfficeCaseNotificationsHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        assertNotNull(callbackResponse);
-        assertEquals(asylumCase, callbackResponse.getData());
-
-        verify(homeOfficeApi, times(1)).call(callback);
-    }
-
-    @Test
-    public void should_call_home_office_api_and_update_the_case_for_respondent_review() {
-
-        when(callback.getEvent()).thenReturn(REQUEST_RESPONDENT_REVIEW);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
-
-        PreSubmitCallbackResponse<AsylumCase> callbackResponse =
-            homeOfficeCaseNotificationsHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        assertNotNull(callbackResponse);
-        assertEquals(asylumCase, callbackResponse.getData());
-
-        verify(homeOfficeApi, times(1)).call(callback);
-    }
-
-    @Test
     @Parameters({
+        "REQUEST_RESPONDENT_EVIDENCE",
+        "REQUEST_RESPONDENT_REVIEW",
         "LIST_CASE",
         "EDIT_CASE_LISTING",
-        "ADJOURN_HEARING_WITHOUT_DATE"
+        "ADJOURN_HEARING_WITHOUT_DATE",
+        "APPLY_FOR_FTPA_APPELLANT",
+        "APPLY_FOR_FTPA_RESPONDENT"
     })
     public void should_call_home_office_api_and_update_the_case_for_list_case(Event event) {
 
@@ -116,8 +90,10 @@ public class HomeOfficeCaseNotificationsHandlerTest {
                         Event.REQUEST_RESPONDENT_REVIEW,
                         Event.LIST_CASE,
                         Event.EDIT_CASE_LISTING,
-                        Event.ADJOURN_HEARING_WITHOUT_DATE
-                    ).contains(callback.getEvent())
+                        Event.ADJOURN_HEARING_WITHOUT_DATE,
+                        Event.APPLY_FOR_FTPA_APPELLANT,
+                        Event.APPLY_FOR_FTPA_RESPONDENT
+                ).contains(callback.getEvent())
                 ) {
                     assertTrue(canHandle);
                 } else {

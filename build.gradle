@@ -210,17 +210,25 @@ pitest {
 }
 
 project.tasks['pitest'].group = "Verification"
+//
+//sonarqube {
+//    properties {
+//        property "sonar.projectName", "IA :: Immigration & Asylum case api"
+//        property "sonar.projectKey", "IACASEAPI"
+//        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+//        property "sonar.pitest.mode", "reuseReport"
+//        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+//        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/iacaseapi/infrastructure/config/**," +
+//                "src/main/java/uk/gov/hmcts/reform/iacaseapi/infrastructure/SystemDateProvider.java," +
+//                "src/main/java/uk/gov/hmcts/reform/iacaseapi/Application.java"
+//    }
+//}
 
 sonarqube {
     properties {
-        property "sonar.projectName", "IA :: Immigration & Asylum case api"
-        property "sonar.projectKey", "IACASEAPI"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.pitest.mode", "reuseReport"
-        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/iacaseapi/infrastructure/config/**," +
-                "src/main/java/uk/gov/hmcts/reform/iacaseapi/infrastructure/SystemDateProvider.java," +
-                "src/main/java/uk/gov/hmcts/reform/iacaseapi/Application.java"
+        property "sonar.projectKey", "tugrulkarakaya_ia-case-api"
+        property "sonar.organization", "tugrulkarakaya"
+        property "sonar.host.url", "https://sonarcloud.io"
     }
 }
 
